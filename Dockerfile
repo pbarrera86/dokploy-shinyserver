@@ -9,3 +9,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Instala paquetes R requeridos por tu app
 RUN R -q -e "install.packages(c('shiny','shinyWidgets','shinyjs','DT','dplyr','DBI','RPostgres','jsonlite','lubridate','httr','tidyquant','tidyverse','emayili'), repos='https://cloud.r-project.org')"
+
