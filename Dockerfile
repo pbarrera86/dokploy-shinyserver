@@ -28,12 +28,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-ARG CACHEBUST=20251223_05
+ARG CACHEBUST=20251223_06
 
 # Paquetes R (union de todo lo que tus apps han pedido)
 RUN R -q -e "install.packages(c( \
   # shiny + UI
   'shiny','shinyWidgets','shinyjs','DT','bslib','thematic', \
+  \
+  # markdown / reportes
+  'markdown','rmarkdown', \
   \
   # data core
   'dplyr','purrr','tidyr','tibble','stringr','jsonlite','yaml','lubridate', \
