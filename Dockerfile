@@ -1,7 +1,8 @@
 FROM rocker/shiny:4.4.2
 
-# Dependencias del sistema para RPostgres, httr, SSL, tidyverse (xml2/ragg/rvest), etc.
+# Dependencias del sistema (Postgres + SSL/HTTP + xml2/rvest + render + sodium + toolchain)
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    # DB / SSL / HTTP
     libpq-dev \
     libssl-dev \
     libcurl4-openssl-dev \
@@ -9,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # xml2 / rvest
     libxml2-dev \
     \
-    # ragg (rendering) y otras deps típicas de tidyverse
+    # ragg / render (útil si en algún punto entra tidyverse/ggplot/rmarkdown)
     libcairo2-dev \
     libfontconfig1-dev \
     libfreetype6-dev \
@@ -19,19 +20,38 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libharfbuzz-dev \
     libfribidi-dev \
     pkg-config \
+    \
+    # sodium
+    libsodium-dev \
+    \
+    # compilar paquetes R
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala paquetes R requeridos por tu app
-ARG CACHEBUST=20251222_01
+ARG CACHEBUST=20251223_05
 
-# (Opcional pero recomendable) asegura herramientas de compilación
-# Si te llega a fallar algo compilando, descomenta estas 2 líneas:
-# RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
-#     && rm -rf /var/lib/apt/lists/*
-
+# Paquetes R (union de todo lo que tus apps han pedido)
 RUN R -q -e "install.packages(c( \
-  'shiny','shinyWidgets','shinyjs','DT','dplyr','DBI','RPostgres','jsonlite','lubridate','httr', \
-  'tidyquant','xml2','ragg','rvest','tidyverse','emayili' \
+  # shiny + UI
+  'shiny','shinyWidgets','shinyjs','DT','bslib','thematic', \
+  \
+  # data core
+  'dplyr','purrr','tidyr','tibble','stringr','jsonlite','yaml','lubridate', \
+  \
+  # web/scraping
+  'httr','xml2','rvest', \
+  \
+  # finanzas
+  'quantmod','TTR','tidyquant','tidyverse', \
+  \
+  # excel
+  'openxlsx', \
+  \
+  # DB
+  'DBI','RPostgres','pool', \
+  \
+  # email / crypto / stats
+  'emayili','sodium','sandwich','lmtest' \
 ), repos='https://cloud.r-project.org')"
 
 RUN echo "CUSTOM_IMAGE_OK - built on $(date -u)" > /usr/local/share/custom_image_ok.txt
