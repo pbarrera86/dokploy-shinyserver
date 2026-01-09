@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-ARG CACHEBUST=20251223_06
+ARG CACHEBUST=20251223_07
 
 # Paquetes R (union de todo lo que tus apps han pedido)
 RUN R -q -e "install.packages(c( \
@@ -40,6 +40,7 @@ RUN R -q -e "install.packages(c( \
   \
   # data core
   'dplyr','purrr','tidyr','tibble','stringr','jsonlite','yaml','lubridate', \
+  'readr','scales','config', \
   \
   # web/scraping
   'httr','xml2','rvest', \
