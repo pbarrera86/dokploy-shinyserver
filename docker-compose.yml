@@ -6,3 +6,19 @@ services:
       - "3838"
     volumes:
       - /srv/shiny-server:/srv/shiny-server
+    networks:
+      - dokploy
+    labels:
+      - "traefik.enable=true"
+
+      # Ruta exacta: pugaxtrade.com/pugaxtrade (y todo lo que cuelgue)
+      - "traefik.http.routers.pugaxtrade.rule=Host(`pugaxtrade.com`) && PathPrefix(`/pugaxtrade`)"
+      - "traefik.http.routers.pugaxtrade.entrypoints=websecure"
+      - "traefik.http.routers.pugaxtrade.tls=true"
+
+      # Puerto interno Shiny
+      - "traefik.http.services.pugaxtrade.loadbalancer.server.port=3838"
+
+networks:
+  dokploy:
+    external: true
