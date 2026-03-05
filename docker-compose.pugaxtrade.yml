@@ -1,8 +1,0 @@
-services:
-  shiny:
-    build: .
-    restart: unless-stopped
-    expose:
-      - "3838"
-    volumes:
-      - /srv/shiny-server-pugaxtrade:/srv/shiny-server
