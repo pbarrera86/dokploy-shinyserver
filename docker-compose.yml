@@ -11,13 +11,16 @@ services:
     labels:
       - "traefik.enable=true"
 
-      # Ruta exacta: pugaxtrade.com/pugaxtrade (y todo lo que cuelgue)
       - "traefik.http.routers.pugaxtrade.rule=Host(`pugaxtrade.com`) && PathPrefix(`/pugaxtrade`)"
       - "traefik.http.routers.pugaxtrade.entrypoints=websecure"
       - "traefik.http.routers.pugaxtrade.tls=true"
+      - "traefik.http.routers.pugaxtrade.priority=100"
 
-      # Puerto interno Shiny
       - "traefik.http.services.pugaxtrade.loadbalancer.server.port=3838"
+
+      # StripPrefix: /pugaxtrade -> /
+      - "traefik.http.middlewares.pugaxtrade-stripprefix.stripprefix.prefixes=/pugaxtrade"
+      - "traefik.http.routers.pugaxtrade.middlewares=pugaxtrade-stripprefix"
 
 networks:
   dokploy:
